@@ -1,26 +1,54 @@
 import Head from 'next/head'
-import {Page, Card, Select, FormLayout, TextField,  Form, Button} from '@shopify/polaris';
+import {Page, Card, Select, FormLayout, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
 import React, {useCallback, useState} from 'react';
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+function Problem(props) {
+
+  let a = getRandomInt(props.end)
+  let b = getRandomInt(props.end)
+
+  return (
+      <TextContainer>
+        <DisplayText size="large">{a} {props.operation} {b} = </DisplayText>
+        <br/><br/><br/>
+      </TextContainer>
+  )
+}
 
 export default function Home() {
   const [operation, setOperation] = useState('+')
-  const [start, setStart] = useState(0)
-  const [end, setEnd] = useState(10)
-  const [quantity, setQuantity] = useState(20)
+  const [end, setEnd] = useState('10')
+  const [quantity, setQuantity] = useState('9')
   
   const handleOperationChange = useCallback((s)=>setOperation(s))
-  const handleStartChange = useCallback((s)=>setStart(s))
   const handleEndChange = useCallback((s)=>setEnd(s))
   const handleQuantityChange = useCallback((s)=>setQuantity(s))
   
   const handleSubmit = useCallback(()=>{
-    console.log("aa")
+    window.print()
   })
+
+  const problems = Array(Number(quantity)).fill().map((_, i) => {
+    return (
+      <Stack distribution="fillEvenly" spacing="loose">
+        <Problem {...{operation, end}}/>
+        <Problem {...{operation, end}}/>
+        <Problem {...{operation, end}}/>
+      </Stack>
+    )
+  });
+
+
   return (
     <Page 
-      title="Math for children"
+      title="Math Worksheets"
+      subtitle="For Children"
       primaryAction={{
-        content: 'Create',
+        content: 'Print',
         onAction: handleSubmit
       }}
     >
@@ -40,30 +68,26 @@ export default function Home() {
           value={operation}
         />
         <TextField
-          label="Quantity"
-          type="number"
-          value={quantity}
-          onChange={handleQuantityChange}
-        />
-        <TextField
-          label="Start"
-          type="number"
-          value={start}
-          onChange={handleStartChange}
-        />
-        <TextField
-          label="End"
+          label="Max Number"
           type="number"
           value={end}
           onChange={handleEndChange}
+        />
+        <TextField
+          label="Rows"
+          type="number"
+          value={quantity}
+          onChange={handleQuantityChange}
         />
         </FormLayout.Group>
         </FormLayout>
       </Form>
       </Card>
-      <Card>
-        ss
+      <br/>
+      <Card sectioned>
+      {problems}
       </Card>
+      
     </Page>
   )
 }
