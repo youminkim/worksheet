@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {Page, Card, Select, FormLayout, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
+import {Page, Card, Select, FormLayout, Checkbox, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
 import React, {useCallback, useState} from 'react';
 
 function getRandomInt(max) {
@@ -10,6 +10,10 @@ function Problem(props) {
 
   let a = getRandomInt(props.end)
   let b = getRandomInt(props.end)
+
+  if (props.noNegative) {
+    b = getRandomInt(a)
+  }
 
   return (
       <TextContainer>
@@ -22,11 +26,13 @@ function Problem(props) {
 export default function Home() {
   const [operation, setOperation] = useState('+')
   const [end, setEnd] = useState('10')
-  const [quantity, setQuantity] = useState('9')
-  
+  const [quantity, setQuantity] = useState('8')
+  const [noNegative, setNoNagative] = useState(true)
+
   const handleOperationChange = useCallback((s)=>setOperation(s))
   const handleEndChange = useCallback((s)=>setEnd(s))
   const handleQuantityChange = useCallback((s)=>setQuantity(s))
+  const handleNoNagativeChange = useCallback((s)=>setNoNagative(s))
   
   const handleSubmit = useCallback(()=>{
     window.print()
@@ -35,9 +41,9 @@ export default function Home() {
   const problems = Array(Number(quantity)).fill().map((_, i) => {
     return (
       <Stack distribution="fillEvenly" spacing="loose">
-        <Problem {...{operation, end}}/>
-        <Problem {...{operation, end}}/>
-        <Problem {...{operation, end}}/>
+        <Problem {...{operation, end, noNegative}}/>
+        <Problem {...{operation, end, noNegative}}/>
+        <Problem {...{operation, end, noNegative}}/>
       </Stack>
     )
   });
@@ -68,7 +74,7 @@ export default function Home() {
           value={operation}
         />
         <TextField
-          label="Max Number"
+          label="Maximum number"
           type="number"
           value={end}
           onChange={handleEndChange}
@@ -79,6 +85,12 @@ export default function Home() {
           value={quantity}
           onChange={handleQuantityChange}
         />
+        <Checkbox
+          label="No negative number"
+          checked={noNegative}
+          onChange={handleNoNagativeChange}
+        />
+
         </FormLayout.Group>
         </FormLayout>
       </Form>
