@@ -6,3 +6,10 @@
     text-align: right;
     margin: auto;
 }
+
+@media print  
+{
+    .row {
+        page-break-inside: avoid;
+    }
+}

@@ -9,28 +9,34 @@ function getRandomInt(min, max) {
 
 function Problem(props) {
 
-  let a = getRandomInt(0, props.end)
+  let a = getRandomInt(1, props.end) // avoid too many zeros in sets
   let b = getRandomInt(0, props.end)
 
-  if (props.noNegative && props.operation == '-') {
-    a = getRandomInt(3, props.end)
-    b = getRandomInt(0, a)
-  }
+  if (!props.carry && props.operation == '+') {
+    a = getRandomInt(1, props.end-1)
+    b = getRandomInt(1, 9-a%10)
+  } else if (!props.carry && props.operation == '-') {
+    a = getRandomInt(1, props.end)
+    b = getRandomInt(1, a%10)
+  } else if (!props.carry && props.operation == 'x') {
+    a = getRandomInt(1, props.end)
+    b = getRandomInt(1, a%10 != 0 ? 10/(a%10) : 10 )
+  } 
 
   return (
       <TextContainer>
         <table class="problem">
           <tr>
             <td></td>
-            <td><Stack distribution="trailing"><DisplayText size="large"> {a} </DisplayText></Stack></td>
+            <td><Stack distribution="trailing"><DisplayText size="medium"> {a} </DisplayText></Stack></td>
           </tr>
           <tr>
-            <td><DisplayText size="large">{props.operation}</DisplayText></td>
-            <td><Stack distribution="trailing"><DisplayText size="large"> {b} </DisplayText></Stack></td>
+            <td><DisplayText size="medium">{props.operation}</DisplayText></td>
+            <td><Stack distribution="trailing"><DisplayText size="medium"> {b} </DisplayText></Stack></td>
           </tr>
         </table>
         {/* <DisplayText size="large">{a} {props.operation} {b} = </DisplayText> */}
-        <br/><br/><br/><br/>
+        <br/><br/><br/>
       </TextContainer>
   )
 }
@@ -38,13 +44,13 @@ function Problem(props) {
 export default function Home() {
   const [operation, setOperation] = useState('+')
   const [end, setEnd] = useState('10')
-  const [quantity, setQuantity] = useState('8')
-  const [noNegative, setNoNagative] = useState(true)
+  const [quantity, setQuantity] = useState('6')
+  const [carry, setCarry] = useState(true)
 
   const handleOperationChange = useCallback((s)=>setOperation(s))
   const handleEndChange = useCallback((s)=>setEnd(s))
   const handleQuantityChange = useCallback((s)=>setQuantity(s))
-  const handleNoNagativeChange = useCallback((s)=>setNoNagative(s))
+  const handleCarryChange = useCallback((s)=>setCarry(s))
   
   const handleSubmit = useCallback(()=>{
     window.print()
@@ -57,20 +63,22 @@ export default function Home() {
 
   const problems = Array(Number(quantity)).fill().map((_, i) => {
     return (
+      <div class="row">
       <Stack distribution="fillEvenly" spacing="loose">
-        <Problem {...{operation, end, noNegative}}/>
-        <Problem {...{operation, end, noNegative}}/>
-        <Problem {...{operation, end, noNegative}}/>
-        <Problem {...{operation, end, noNegative}}/>
+        <Problem {...{operation, end, carry}}/>
+        <Problem {...{operation, end, carry}}/>
+        <Problem {...{operation, end, carry}}/>
+        <Problem {...{operation, end, carry}}/>
       </Stack>
+      </div>
     )
   });
 
 
   return (
     <Page 
-      title="Math Worksheets"
-      subtitle="For Children"
+      title="Math Worksheet"
+      titleMetadata={<u>worksheet.now.sh</u>}
       primaryAction={{
         content: 'Print',
         onAction: handleSubmit
@@ -92,7 +100,7 @@ export default function Home() {
           value={operation}
         />
         <TextField
-          label="Maximum number"
+          label="Maximum"
           type="number"
           value={end}
           onChange={handleEndChange}
@@ -103,12 +111,13 @@ export default function Home() {
           value={quantity}
           onChange={handleQuantityChange}
         />
+        <Stack vertical>
         <Checkbox
-          label="No negative number"
-          checked={noNegative}
-          onChange={handleNoNagativeChange}
+          label="Allow carrying"
+          checked={carry}
+          onChange={handleCarryChange}
         />
-
+        </Stack>
         </FormLayout.Group>
         </FormLayout>
       </Form>
