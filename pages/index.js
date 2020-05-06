@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import {Page, Card, Select, FormLayout, Checkbox, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
+import ReactGA from 'react-ga';
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -36,6 +37,11 @@ export default function Home() {
   
   const handleSubmit = useCallback(()=>{
     window.print()
+  })
+
+  useEffect(()=>{
+    ReactGA.initialize('UA-71350538-5');
+    ReactGA.pageview(window.location.pathname + window.location.search);
   })
 
   const problems = Array(Number(quantity)).fill().map((_, i) => {
