@@ -1,4 +1,5 @@
 import '@shopify/polaris/styles.css';
+import '../style.css'
 import {AppProvider} from '@shopify/polaris';
 import translations from '@shopify/polaris/locales/en.json';
 

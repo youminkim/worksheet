@@ -19,8 +19,18 @@ function Problem(props) {
 
   return (
       <TextContainer>
-        <DisplayText size="large">{a} {props.operation} {b} = </DisplayText>
-        <br/><br/><br/>
+        <table class="problem">
+          <tr>
+            <td></td>
+            <td><Stack distribution="trailing"><DisplayText size="large"> {a} </DisplayText></Stack></td>
+          </tr>
+          <tr>
+            <td><DisplayText size="large">{props.operation}</DisplayText></td>
+            <td><Stack distribution="trailing"><DisplayText size="large"> {b} </DisplayText></Stack></td>
+          </tr>
+        </table>
+        {/* <DisplayText size="large">{a} {props.operation} {b} = </DisplayText> */}
+        <br/><br/><br/><br/>
       </TextContainer>
   )
 }
@@ -51,6 +61,7 @@ export default function Home() {
         <Problem {...{operation, end, noNegative}}/>
         <Problem {...{operation, end, noNegative}}/>
         <Problem {...{operation, end, noNegative}}/>
+        <Problem {...{operation, end, noNegative}}/>
       </Stack>
     )
   });
@@ -65,12 +76,12 @@ export default function Home() {
         onAction: handleSubmit
       }}
     >
-      <Card sectioned>
+      <Card key="card1" sectioned>
       <Form onSubmit={handleSubmit}>
         <FormLayout>
         <FormLayout.Group condensed>
         <Select
-          label="Operation"
+          label="Operator"
           options={[
             {label: '+', value: '+'},
             {label: '-', value: '-'},
@@ -103,9 +114,9 @@ export default function Home() {
       </Form>
       </Card>
       <br/>
-      <Card sectioned>
+      <div>
       {problems}
-      </Card>
+      </div>
       
     </Page>
   )
