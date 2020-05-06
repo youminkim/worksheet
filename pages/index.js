@@ -3,17 +3,18 @@ import {Page, Card, Select, FormLayout, Checkbox, Stack, TextField,  Form, Displ
 import React, {useCallback, useState, useEffect} from 'react';
 import ReactGA from 'react-ga';
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
 }
 
 function Problem(props) {
 
-  let a = getRandomInt(props.end)
-  let b = getRandomInt(props.end)
+  let a = getRandomInt(0, props.end)
+  let b = getRandomInt(0, props.end)
 
-  if (props.noNegative) {
-    b = getRandomInt(a)
+  if (props.noNegative && props.operation == '-') {
+    a = getRandomInt(3, props.end)
+    b = getRandomInt(0, a)
   }
 
   return (
