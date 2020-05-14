@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {Page, Card, Select, FormLayout, Checkbox, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
+import {Page, Card, Select, Button, FormLayout, Checkbox, Stack, TextField,  Form, DisplayText, TextContainer} from '@shopify/polaris';
 import React, {useCallback, useState, useEffect} from 'react';
 import ReactGA from 'react-ga';
 
@@ -44,7 +44,7 @@ function Problem(props) {
 export default function Home() {
   const [operation, setOperation] = useState('+')
   const [end, setEnd] = useState('10')
-  const [quantity, setQuantity] = useState('6')
+  const [quantity, setQuantity] = useState('7')
   const [cols, setCols] = useState('6')
   const [carry, setCarry] = useState(true)
 
@@ -83,12 +83,13 @@ export default function Home() {
     <Page 
       title={<span>Math Worksheet {github}</span>}
       titleMetadata={<u>worksheet.now.sh</u>}
-      primaryAction={{
-        content: 'Print',
-        onAction: handleSubmit
-      }}
     >
-      <Card key="card1" sectioned>
+      <div className="no-print">
+      <Stack distribution="trailing">
+        <Button primary onClick={handleSubmit}>Print</Button>
+      </Stack>
+      
+      <Card key="card1" sectioned> 
       <Form onSubmit={handleSubmit}>
         <FormLayout>
         <FormLayout.Group condensed>
@@ -132,6 +133,7 @@ export default function Home() {
         </FormLayout>
       </Form>
       </Card>
+      </div>
       <br/>
       <div>
       {problems}
