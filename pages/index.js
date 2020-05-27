@@ -9,18 +9,32 @@ function getRandomInt(min, max) {
 
 function Problem(props) {
 
-  let a = getRandomInt(1, props.end) // avoid too many zeros in sets
-  let b = getRandomInt(0, props.end)
+  const s = Number(props.start)
+  const e = Number(props.end)+1
+  const neg = Boolean(props.negative)
+  const car = Boolean(props.carry)
 
-  if (!props.carry && props.operation == '+') {
-    a = getRandomInt(1, props.end-1)
-    b = getRandomInt(1, 9-a%10)
-  } else if (!props.carry && props.operation == '-') {
-    a = getRandomInt(1, props.end)
-    b = getRandomInt(1, a%10)
-  } else if (!props.carry && props.operation == 'x') {
-    a = getRandomInt(1, props.end)
-    b = getRandomInt(1, a%10 != 0 ? 10/(a%10) : 10 )
+  let a = getRandomInt(s, e) // avoid too many zeros in sets
+  let b = getRandomInt(s, e)
+
+  if (props.operation == '+') {
+    if (!car) {
+      a = getRandomInt(s, e)
+      b = getRandomInt(0, 9-a%10) // ignore min value
+    }
+  } else if (props.operation == '-') {
+    if (!car){
+      a = getRandomInt(s, e)
+      b = getRandomInt(s, a%10)
+    } else if (!neg) {
+      a = getRandomInt(s, e)
+      b = getRandomInt(s, a)
+    }
+  } else if (props.operation == 'x') {
+    if (!car){
+      a = getRandomInt(s, e)
+      b = getRandomInt(s, a%10 != 0 ? 10/(a%10) : 10 )
+    }
   } 
 
   return (
@@ -43,16 +57,39 @@ function Problem(props) {
 
 export default function Home() {
   const [operation, setOperation] = useState('+')
+  const [start, setStart] = useState('1')
   const [end, setEnd] = useState('10')
   const [quantity, setQuantity] = useState('7')
   const [cols, setCols] = useState('6')
   const [carry, setCarry] = useState(true)
+  const [negative, setNagative] = useState(true)
+
+  const [startDisabled, setStartDisabled] = useState(false)
+  const [negativeDisabled, setNegativeDisabled] = useState(false)
 
   const handleOperationChange = useCallback((s)=>setOperation(s))
-  const handleEndChange = useCallback((s)=>setEnd(s))
+  const handleStartChange = useCallback((s)=>{
+    if (Number(s) < Number(end) && Number(s) >= 0)
+      setStart(s)
+  })
+  const handleEndChange = useCallback((s)=>{
+    if (Number(s) > Number(start) && Number(s) >= 0)
+      setEnd(s)
+  })
   const handleQuantityChange = useCallback((s)=>setQuantity(s))
   const handleColsChange = useCallback((s)=>setCols(s))
-  const handleCarryChange = useCallback((s)=>setCarry(s))
+  const handleCarryChange = useCallback((s)=>{
+    setCarry(s)
+    setStartDisabled(!s)
+    setNegativeDisabled(!s)
+    if (!s){
+      setStart('0')
+      setNagative(false)
+    }
+
+    
+  })
+  const handleNegativeChange = useCallback((s)=>setNagative(s))
   
   const handleSubmit = useCallback(()=>{
     window.print()
@@ -65,7 +102,7 @@ export default function Home() {
 
   const problems = Array(Number(quantity)).fill().map((_, i) => {
    const columns = Array(Number(cols)).fill().map((_, i) => {
-      return (<Problem {...{operation, end, carry}}/>)
+      return (<Problem {...{operation, start, end, carry, negative}}/>)
    });
    return (
       <div class="row">
@@ -105,10 +142,17 @@ export default function Home() {
           value={operation}
         />
         <TextField
-          label="Maximum"
+          label="Max"
           type="number"
           value={end}
           onChange={handleEndChange}
+        />
+        <TextField
+          label="Min"
+          type="number"
+          value={start}
+          disabled={startDisabled}
+          onChange={handleStartChange}
         />
         <TextField
           label="Rows"
@@ -127,6 +171,12 @@ export default function Home() {
           label="Allow carrying"
           checked={carry}
           onChange={handleCarryChange}
+        />
+        <Checkbox
+          label="Allow negative"
+          checked={negative}
+          disabled={negativeDisabled}
+          onChange={handleNegativeChange}
         />
         </Stack>
         </FormLayout.Group>
