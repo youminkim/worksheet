@@ -20,7 +20,7 @@ function Problem(props) {
   if (props.operation == '+') {
     if (!car) {
       a = getRandomInt(s, e)
-      b = getRandomInt(0, 9-a%10) // ignore min value
+      b = getRandomInt(1, 9-a%10) // ignore min value
     }
   } else if (props.operation == '-') {
     if (!car){
@@ -69,11 +69,11 @@ export default function Home() {
 
   const handleOperationChange = useCallback((s)=>setOperation(s))
   const handleStartChange = useCallback((s)=>{
-    if (Number(s) < Number(end) && Number(s) >= 0)
+    if (Number(s) >= 0)
       setStart(s)
   })
   const handleEndChange = useCallback((s)=>{
-    if (Number(s) > Number(start) && Number(s) >= 0)
+    if (Number(s) >= 0)
       setEnd(s)
   })
   const handleQuantityChange = useCallback((s)=>setQuantity(s))
@@ -83,7 +83,7 @@ export default function Home() {
     setStartDisabled(!s)
     setNegativeDisabled(!s)
     if (!s){
-      setStart('0')
+      setStart('1')
       setNagative(false)
     }
 
