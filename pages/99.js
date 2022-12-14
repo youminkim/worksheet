@@ -12,6 +12,7 @@ export default function Gugu() {
         new Array(numTables).map(() => 1),
         tables
     );
+
     return (
         <Page title={"9x9"} titleMetadata={<a href="/">worksheet.now.sh</a>}>
             <div className="no-print">
