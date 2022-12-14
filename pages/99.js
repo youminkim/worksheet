@@ -1,4 +1,4 @@
-import { FormLayout, Page, TextField } from "@shopify/polaris";
+import { FormLayout, Page, Stack, Text, TextField } from "@shopify/polaris";
 import { useState } from "react";
 
 export default function Gugu() {
@@ -46,49 +46,80 @@ export default function Gugu() {
 function table(percent) {
     const r = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     const c = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let problems = [];
     return (
-        <table
-            style={{
-                width: "100%",
-                margin: "auto",
-                fontSize: "20px",
-                borderCollapse: "collapse",
-                pageBreakInside: "avoid",
-                // border: "1px solid #000",
-            }}
-        >
-            <tbody>
-                {r.map((i) => {
-                    return (
-                        <tr style={{ pageBreakInside: "avoid" }}>
-                            {c.map((j) => {
-                                let v = j * i;
-                                const isHeader = j === 1 || i === 1;
-                                if (i === 1 && j === 1) v = "X";
-                                const p = Math.random();
-                                if (!isHeader && p < parseInt(percent) / 100)
-                                    v = "";
+        <div>
+            <table
+                style={{
+                    width: "100%",
+                    margin: "auto",
+                    fontSize: "20px",
+                    borderCollapse: "collapse",
+                    pageBreakInside: "avoid",
+                    // border: "1px solid #000",
+                }}
+            >
+                <tbody>
+                    {r.map((i) => {
+                        return (
+                            <tr style={{ pageBreakInside: "avoid" }}>
+                                {c.map((j) => {
+                                    let v = j * i;
+                                    const isHeader = j === 1 || i === 1;
+                                    if (i === 1 && j === 1) v = "X";
+                                    const p = Math.random();
+                                    if (
+                                        !isHeader &&
+                                        p < parseInt(percent) / 100
+                                    ) {
+                                        v = "";
+                                        problems.push(`${j} x ${i} =`);
+                                    }
 
-                                return (
-                                    <td
-                                        style={{
-                                            textAlign: "center",
-                                            border: "1px solid #000",
-                                            height: "50px",
-                                            backgroundColor: isHeader
-                                                ? "#ddd"
-                                                : "white",
-                                            fontWeight: isHeader ? "bold" : "",
-                                        }}
-                                    >
-                                        {v}
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+                                    return (
+                                        <td
+                                            style={{
+                                                textAlign: "center",
+                                                border: "1px solid #000",
+                                                height: "50px",
+                                                backgroundColor: isHeader
+                                                    ? "#ddd"
+                                                    : "white",
+                                                fontWeight: isHeader
+                                                    ? "bold"
+                                                    : "",
+                                            }}
+                                        >
+                                            {v}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+            <div style={{ paddingTop: "30px" }}>
+                <Stack spacing="loose">
+                    {shuffleArray(problems)
+                        .slice(0, 20)
+                        .map((problem) => {
+                            return (
+                                <div style={{ width: "150px", height: "50px" }}>
+                                    <Text variant="headingXl">{problem}</Text>
+                                </div>
+                            );
+                        })}
+                </Stack>
+            </div>
+        </div>
     );
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
